@@ -27,6 +27,7 @@ exports.getAllUsers = (req, res, next) => {
 
 exports.updateUserByUserId = (req, res, next) => {
   var user = req.body.user;
+
   user.modifiedOn = new Date();
 
   UserInfoRepo.updateUser(req.params.userId, user)
