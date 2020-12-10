@@ -1,9 +1,6 @@
 var createError = require("http-errors");
 var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
-const bodyParser = require("body-parser");
+
 var cors = require("cors");
 require("dotenv").config();
 const { UserFacingError } = require("./src/utils/baseErrors");
@@ -14,20 +11,21 @@ const {
 const { ERROR_CONSTANTS, STATUS_CODES } = require("./src/utils/constants");
 const { FailureResponse } = require("./src/object-models/response-model");
 const { connectToDatabase } = require("./src/utils/db-utils");
-const UserInfo = require("./src/entity/user-info");
+const { logger } = require("./src/utils/logging-utils");
+
 var app = express();
-app.set("port", process.env.port || 4003);
-app.set("view engine", "ejs");
-app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, "public")));
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
-// parse application/json
-app.use(bodyParser.json());
-
+app.use(
+  require("morgan")("combined", {
+    stream: {
+      write: function (message, encoding) {
+        logger.info(message);
+      },
+    },
+  })
+);
 connectToDatabase()
   .then((connection) => {})
   .catch((err) => {
@@ -56,10 +54,10 @@ app.use(function (err, req, res, next) {
     var resp = {
       ...ERROR_CONSTANTS.INTERNAL_SERVER_ERROR,
       info: err.message,
-      stack: err.stack,
     };
     res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).send(resp);
   }
+  logger.error(err.message);
 });
 
 app.set("port", 4003);

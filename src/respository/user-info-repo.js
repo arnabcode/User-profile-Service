@@ -1,12 +1,16 @@
 var { getConnection } = require("../utils/db-utils");
 var UserInfo = require("../entity/user-info");
+const { logger } = require("../utils/logging-utils");
 
 exports.addUser = (newUser) => {
   return new Promise((resolve, reject) => {
     getConnection()
       .getRepository(UserInfo)
       .save(newUser)
-      .then((user) => resolve(user))
+      .then((user) => {
+        logger.info(`User saved successfully : ${user}`);
+        resolve(user);
+      })
       .catch((err) => reject(err));
   });
 };

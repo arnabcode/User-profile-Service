@@ -5,3 +5,4 @@ serviceAccountKey.json
 keys.js
 ormconfig.json
 firebaseConfig.json
+logglyConfig.json

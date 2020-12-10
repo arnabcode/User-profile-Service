@@ -1,6 +1,8 @@
 const UserInfoRepo = require("../respository/user-info-repo");
 const uniqid = require("uniqid");
 const { CONSTANTS } = require("../utils/constants");
+const { sendMessageToUserProfileQueue } = require("../utils/sqs-utils");
+const { logger } = require("../utils/logging-utils");
 
 exports.addNewUser = (req, res, next) => {
   var { user } = req.body;
@@ -12,7 +14,10 @@ exports.addNewUser = (req, res, next) => {
 
   UserInfoRepo.addUser(user)
     .then((user) => {
-      res.status(200).send({ userId: user.userId });
+      sendMessageToUserProfileQueue(user).then((messageId) => {
+        logger.info(`Sent message with Id :  ${messageId}`);
+        res.status(200).send({ userId: user.userId });
+      });
     })
     .catch((err) => next(err));
 };
