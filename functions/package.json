@@ -17,7 +17,7 @@
     "firebase-functions": "^3.11.0",
     "@types/node": "^14.14.10",
     "aws-sdk": "^2.807.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "cors": "^2.8.5",
     "debug": "~2.6.9",
     "dotenv": "^8.2.0",
