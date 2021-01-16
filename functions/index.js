@@ -86,4 +86,4 @@ app.use(function (err, req, res, next) {
   logger.error({ code: err.code, message: err.message, stack: err.stack });
 });
 
-exports.app = functions.https.onRequest(app);
+exports.userProfileService = functions.https.onRequest(app);
